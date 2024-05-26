@@ -7,9 +7,10 @@ import 'element-plus/dist/index.css';
 import './style.css';
 
 const importComponent = (componentPath: string[]) => {
-  const component = ["./pages", ...componentPath]
+  const component = componentPath
     .filter(item => item !== "")
     .join("/")
+  console.log(component)
   return () => import(
     /* @vite-ignore */
     `./${component}.vue`
@@ -17,17 +18,25 @@ const importComponent = (componentPath: string[]) => {
 }
 
 const mapRoute = (route: any) => {
-  const {path, component, routes, redirect, wrappers, name, icon} = route
+  const {path, component, children, redirect, wrappers, name, icon} = route
+
   return {
     path,
-    component: importComponent(component.split("/")),
-    routes: routes?.map(mapRoute),
+    component: importComponent(
+      [
+        component && children ? "./layouts" : "./pages",
+        ...component.split("/")
+      ]
+    ),
+    children: children?.map(mapRoute),
     redirect,
     wrappers,
     name,
     icon
   }
 }
+
+console.log(routes)
 
 const router = createRouter({
   history: createWebHistory(),
