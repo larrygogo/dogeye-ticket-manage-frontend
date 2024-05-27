@@ -76,5 +76,3 @@ const resetForm = (formEl: FormInstance | undefined) => {
     </el-card>
   </div>
 </template>
-<script setup lang="ts">
-</script>
