@@ -8,6 +8,7 @@ const routes = [
       { path: '/member', component: "/member/list" },
       { path: '/order', component: "/order/list" },
       { path: '/film', component: "/film/list" },
+      { path: '/admin', component: "/admin/list" },
     ]
   },
 ]

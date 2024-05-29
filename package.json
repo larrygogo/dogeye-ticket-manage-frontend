@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/node": "^20.12.12",
     "date-fns": "^3.6.0",
     "echarts": "^5.5.0",
     "element-plus": "^2.7.3",

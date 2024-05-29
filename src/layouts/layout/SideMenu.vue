@@ -29,6 +29,12 @@
         </el-icon>
         <span>订单管理</span>
       </el-menu-item>
+      <el-menu-item index="/admin">
+        <el-icon>
+          <UserRoundCog />
+        </el-icon>
+        <span>管理员管理</span>
+      </el-menu-item>
       <el-menu-item index="/member">
         <el-icon>
           <Users/>
@@ -39,7 +45,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {Gauge, Video, Ticket, Users} from 'lucide-vue-next'
+import {Gauge, Video, Ticket, Users, UserRoundCog} from 'lucide-vue-next'
 import {useSettingsStore} from "@/stores/settings.ts";
 import {ref} from "vue";
 const activeIndex = ref('dashboard')
