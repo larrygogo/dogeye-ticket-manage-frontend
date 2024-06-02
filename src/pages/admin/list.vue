@@ -21,14 +21,11 @@
           </div>
         </div>
         <el-table :data="data" style="width: 100%">
-          <el-table-column prop="nickname" label="昵称" min-width="120"/>
-          <el-table-column prop="username" label="账号" min-width="120"/>
+          <el-table-column prop="name" label="昵称" min-width="120"/>
+          <el-table-column prop="idCard" label="身份证" min-width="120"/>
           <el-table-column prop="phone" label="手机号" min-width="120"/>
-          <el-table-column prop="isVip" label="状态" min-width="120">
-            <template #default="{row}">
-              <el-tag v-if="row.status" type="primary">正常</el-tag>
-              <el-tag v-else type="danger">禁用</el-tag>
-            </template>
+          <el-table-column prop="gender" label="性别" min-width="120"/>
+          <el-table-column prop="roles" label="角色" min-width="120">
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="120">
             <template #default>
@@ -54,18 +51,27 @@
         title="创建管理员"
         width="500"
     >
-      <el-form :model="form" label-width="auto" >
-        <el-form-item name="nickname" label="昵称">
-          <el-input placeholder="请输入昵称" v-model="form.nickname"/>
+      <el-form :model="form" label-width="auto">
+        <el-form-item name="name" label="昵称">
+          <el-input placeholder="请输入昵称" v-model="form.name"/>
         </el-form-item>
-        <el-form-item name="username" label="账号">
-          <el-input placeholder="请输入账号" v-model="form.username"/>
+        <el-form-item name="idcard" label="身份证">
+          <el-input placeholder="请输入账号" v-model="form.idcard"/>
+        </el-form-item>
+        <el-form-item name="phone" label="电话">
+          <el-input placeholder="请输入电话" v-model="form.phone"/>
         </el-form-item>
         <el-form-item name="password" label="密码">
-          <el-input type="password" placeholder="请输入账号" v-model="form.password"/>
+          <el-input type="password" placeholder="请输入密码" v-model="form.password"/>
         </el-form-item>
-        <el-form-item label="是否启用">
-          <el-switch v-model="form.status" active-color="#13ce66" inactive-color="#ff4949" active-text="开启" inactive-text="禁用"/>
+        <el-form-item name="gender" label="性别">
+          <el-radio-group v-model="form.gender">
+            <el-radio :label="0">男</el-radio>
+            <el-radio :label="1">女</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item name="roles" label="角色">
+          <el-input placeholder="请输入角色" v-model="form.roles"/>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -80,19 +86,20 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { AdminInfo } from "@/types/admin";
 import {reactive, ref, watch} from "vue";
 
-const data = ref<AdminInfo[]>([])
+const data = ref()
 const current = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
 
 const form = reactive({
-  nickname: '',
-  username: '',
+  name: '',
+  idCard: '',
   password: '',
-  status: 1
+  phone: '',
+  gender: '',
+  roles: ''
 })
 
 const createAdminModalOpen = ref(false)
@@ -109,23 +116,30 @@ const handleCurrentChange = (val: number) => {
   current.value = val
 }
 
-const getUsers = async (params?: {
+const getFilms = async (params?: {
   current?: number
   pageSize?: number
-}) => {
+}): Promise<{
+  code: number
+  data: any
+  message: string
+}> => {
   const {current, pageSize} = params || {}
   console.log(current, pageSize)
-  return fetch(`/api/admin/list?page=${current}&pageSize=${pageSize}`)
+  const result =  fetch(`/api/admin/getAdminList?pageNumber=${current}&pageSize=${pageSize}`)
       .then(res => res.json())
+  console.log(result)
+  return result
 }
 
-getUsers({
+getFilms({
   current: 1,
   pageSize: 10
 }).then(res => {
-  if (res.code === 200) {
-    data.value = res.data.list
-    total.value = res.data.total
+  if (res.code === 0) {
+    data.value = res.data
+    console.log(data)
+    total.value = res.data.length
   }
 })
 
@@ -134,7 +148,7 @@ watch(
     [current, pageSize],
     (value) => {
       const [current, pageSize] = value
-      getUsers({
+      getFilms({
         current: current,
         pageSize: pageSize
       }).then(res => {
@@ -145,7 +159,6 @@ watch(
       })
     }
 )
-
 
 
 </script>
