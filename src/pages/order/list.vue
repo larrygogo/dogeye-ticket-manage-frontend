@@ -1,19 +1,6 @@
 <template>
   <div class="flex flex-col gap-2">
     <el-card shadow="never">
-      <el-form :inline="true">
-        <el-form-item label="订单号">
-          <el-input placeholder="请输入订单号"/>
-        </el-form-item>
-        <el-form-item label="手机号">
-          <el-input placeholder="请输入手机号"/>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="">查询</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-    <el-card shadow="never">
       <div class="flex flex-col gap-4">
         <div class="flex justify-between">
           <div class="text-lg font-bold">订单管理</div>
@@ -25,36 +12,36 @@
         </div>
         <el-table :data="data" style="width: 100%">˚
           <el-table-column prop="orderId" label="订单编号" min-width="200"/>
-          <el-table-column prop="filmName" label="片名" min-width="200"/>
-          <el-table-column prop="cinemaId" label="影厅" min-width="120">
-            <template #default="{row}">
-              {{ row.cinemaId }} 号厅
+          <el-table-column prop="filmId" label="片名" min-width="200"/>
+          <el-table-column prop="sessionId" label="影厅" min-width="120">
+            <template #default="scope">
+              {{ scope.row.sessionId }} 号厅
             </template>
           </el-table-column>
 
           <el-table-column prop="seat" label="座位" min-width="120"/>
-          <el-table-column prop="name" label="姓名" min-width="120"/>
+          <el-table-column prop="uid" label="姓名" min-width="120"/>
           <el-table-column prop="phone" label="手机号" min-width="120"/>
           <el-table-column prop="price" label="价格" min-width="120">
-            <template #default="{row}">
-              {{ row.price }} 元
+            <template #default="scope">
+              {{ scope.row.price }} 元
             </template>
           </el-table-column>
           <el-table-column prop="status" label="状态" min-width="120">
-            <template #default="{row}">
-              <el-tag>{{ row.status }}</el-tag>
+            <template #default="scope">
+              <el-tag>{{ scope.row.status }}</el-tag>
             </template>
           </el-table-column>
           <el-table-column prop="orderDate" label="创建时间" min-width="200">
-            <template #default="{row}">
-              {{ row.orderDate }}
+            <template #default="scope">
+              {{ scope.row.orderDate }}
             </template>
           </el-table-column>
 
           <el-table-column fixed="right" label="操作" width="120">
-            <template #default>
-              <el-button link type="primary" size="small" @click="handleClick">
-                详情
+            <template #default="scope">
+              <el-button link type="primary" size="small" @click="handleClick(scope.row.orderId)">
+                删除
               </el-button>
             </template>
           </el-table-column>
@@ -63,7 +50,7 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="current"
-            :page-sizes="[10, 20, 30, 40]"
+            :page-sizes="[5, 10, 20, 30]"
             :page-size="pageSize"
             layout="total, sizes, prev, pager, next"
             :total="total"
@@ -71,18 +58,55 @@
       </div>
     </el-card>
   </div>
+
+  <el-dialog v-model="centerDialogVisible.value" title="确认删除吗" width="500" center>
+    <span>
+      确认删除吗
+    </span>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="centerDialogVisible.value = false">取消</el-button>
+        <el-button type="primary" @click="centerDialogVisible.value= false; deleteOrder()">
+          确定
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
+
 </template>
 <script lang="ts" setup>
-import {ref, watchEffect} from "vue";
-import {FilmInfo} from "@/types/film.ts";
+import {reactive, ref, watch} from "vue";
 
-const data = ref<FilmInfo[]>([])
+const data = ref([])
 const current = ref(1)
-const pageSize = ref(10)
+const pageSize = ref(5)
 const total = ref(0)
 
-const handleClick = () => {
-  console.log('click')
+const centerDialogVisible = reactive({
+  value: false,
+  orderId: ''
+})
+
+const handleClick = async (orderId: string) => {
+  centerDialogVisible.value = true
+  centerDialogVisible.orderId = orderId
+}
+
+const deleteOrder = async () => {
+  console.log(centerDialogVisible.orderId)
+  const result = await fetch(`/api/order/deleteById?orderId=${centerDialogVisible.orderId}`, {method: "delete"})
+      .then(res => res.json())
+  if (result.code == 0) {
+    console.log("删除成功")
+    const res = await getOrders({
+      current: current.value,
+      pageSize: pageSize.value
+    })
+    data.value = res.data
+    total.value = Number(res.message)
+  } else {
+    alert(result.message)
+  }
 }
 
 const handleSizeChange = (val: number) => {
@@ -93,29 +117,53 @@ const handleCurrentChange = (val: number) => {
   current.value = val
 }
 
-const getUsers = async (params?: {
+const getOrders = async (params?: {
   current?: number
   pageSize?: number
-}) => {
+}): Promise<{
+  code: number
+  data: any
+  message: string
+}> => {
   const {current, pageSize} = params || {}
   console.log(current, pageSize)
-  return fetch(`/api/order/list?page=${current}&pageSize=${pageSize}`)
+  const result = await fetch(`/api/order/getOrderList?pageNumber=${current}&pageSize=${pageSize}`)
       .then(res => res.json())
+  for (let i =0; i < result.data.length; i++){
+    result.data[i].uid = await fetch(`/api/user/findUserById?uid=${result.data[i].uid}`)
+        .then(res => res.json())
+        .then(res => res.data.name)
+  }
+
+  return result
 }
 
-watchEffect(() => {
-  getUsers({
-    current: current.value,
-    pageSize: pageSize.value
-  }).then(res => {
-    if (res.code === 200) {
-      data.value = res.data.list
-      total.value = res.data.total
-      current.value = res.data.page
-      pageSize.value = res.data.pageSize
-    }
-  })
+getOrders({
+  current: 1,
+  pageSize: 5
+}).then(res => {
+  if (res.code === 0) {
+    data.value = res.data
+    console.log(data)
+    total.value = Number(res.message)
+  }
 })
 
+
+watch(
+    [current, pageSize],
+    (value) => {
+      const [current, pageSize] = value
+      getOrders({
+        current: current,
+        pageSize: pageSize
+      }).then(res => {
+        if (res.code === 0) {
+          data.value = res.data
+          total.value = total.value = Number(res.message)
+        }
+      })
+    }
+)
 
 </script>

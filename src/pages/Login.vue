@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import {reactive, ref} from 'vue'
 import type {FormInstance, FormRules} from 'element-plus'
+// import {useUserInfoStore} from "@/stores/user.ts";
 
 const ruleFormRef = ref<FormInstance>()
 
@@ -13,6 +14,7 @@ const checkUsername = (_: any, value: any, callback: any) => {
   if (value === '') {
     callback(new Error('请输入用户名'))
   } else {
+    ruleForm.username = value;
     callback()
   }
 }
@@ -21,6 +23,7 @@ const validatePassword = (_: any, value: any, callback: any) => {
   if (value === '') {
     callback(new Error('请输入密码'))
   } else {
+    ruleForm.password = value;
     callback()
   }
 }
@@ -32,23 +35,27 @@ const rules = reactive<FormRules<typeof ruleForm>>({
 
 const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
-  formEl.validate((valid) => {
+  formEl.validate(async (valid) => {
     if (valid) {
-      console.log('submit!')
+      const result = await fetch(`/api/login?name=${ruleForm.username}&password=${ruleForm.password}`, {method: 'GET'})
+          .then(res => res.json())
+      if (result.code === 0){
+        // const store = useUserInfoStore()
+
+        window.location.href = '/index'
+      } else {
+        console.log(result.msg)
+      }
     } else {
       console.log('error submit!')
     }
   })
 }
 
-const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.resetFields()
-}
 </script>
 <template>
   <div class="flex flex-col gap-4 items-center justify-center w-full h-screen">
-    <div class="text-2xl font-bold">狗眼票务管理系统</div>
+    <div class="text-2xl font-bold">票务管理系统</div>
     <el-card style="min-width:  400px">
       <el-form
           label-position="top"

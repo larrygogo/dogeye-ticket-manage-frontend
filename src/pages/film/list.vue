@@ -14,8 +14,8 @@
         <el-table-column prop="filmType" label="类型" min-width="120"/>
         <el-table-column prop="language" label="语言" min-width="120"/>
         <el-table-column prop="filmDuration" label="时长" min-width="120">
-          <template #default="{row}">
-            {{row.filmDuration}} 分钟
+          <template #default="scope">
+            {{scope.row.filmDuration}} 分钟
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="120">
@@ -40,9 +40,8 @@
 </template>
 <script lang="ts" setup>
 import {ref, watchEffect} from "vue";
-import {FilmInfo} from "@/types/film.ts";
 
-const data = ref<FilmInfo[]>([])
+const data = ref([])
 const current = ref(1)
 const pageSize = ref(10)
 const total = ref(0)

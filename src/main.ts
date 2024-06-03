@@ -4,11 +4,15 @@ import ElementPlus from 'element-plus'
 import routes from "../config/routes.ts";
 import {createRouter, createWebHistory} from "vue-router";
 import 'element-plus/dist/index.css';
-import './style.css';
-import {createPinia} from "pinia";
+import './style.css'
 import VueECharts from "vue-echarts";
 import * as echarts from "echarts"
 import { use } from "echarts/core";
+import { createPinia } from 'pinia'
+// import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+
+const pinia = createPinia()
+// pinia.use(piniaPluginPersistedstate)
 
 // 手动引入 ECharts 各模块来减小打包体积
 import {
@@ -60,7 +64,6 @@ const router = createRouter({
   history: createWebHistory(),
   routes: routes?.map(mapRoute)
 })
-const pinia = createPinia()
 const app = createApp(App)
 app.config.globalProperties.$echarts = echarts
 app.component("v-chart", VueECharts)

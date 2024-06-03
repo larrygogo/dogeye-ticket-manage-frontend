@@ -2,16 +2,16 @@
   <div class="flex flex-col gap-4">
     <div class="flex justify-between">
       <div class="text-lg font-bold">仪表盘</div>
-      <div class="flex gap-2">
-        <el-date-picker
-            v-model="dateRange"
-            type="daterange"
-            range-separator="To"
-            start-placeholder="Start date"
-            end-placeholder="End date"
-        />
-        <el-button type="primary">搜索</el-button>
-      </div>
+<!--      <div class="flex gap-2">-->
+<!--        <el-date-picker-->
+<!--            v-model="dateRange"-->
+<!--            type="daterange"-->
+<!--            range-separator="To"-->
+<!--            start-placeholder="Start date"-->
+<!--            end-placeholder="End date"-->
+<!--        />-->
+<!--        <el-button type="primary">搜索</el-button>-->
+<!--      </div>-->
     </div>
     <div class="grid grid-cols-4 gap-4">
       <el-card shadow="never">
@@ -82,17 +82,17 @@
 </template>
 <script setup lang="ts">
 import {ref} from "vue";
-import {subDays} from "date-fns";
+// import {subDays} from "date-fns";
 import {Video, Users, Ticket} from "lucide-vue-next"
 
-const dateRange = ref<[Date, Date]>([subDays(new Date(), 7), new Date()])
+// const dateRange = ref<[Date, Date]>([subDays(new Date(), 7), new Date()])
 const barChartOptions = ref({
   tooltip: {},
   legend: {
     data: ['销量']
   },
   xAxis: {
-    data: ["2024-01-01", "2024-01-02", "2024-01-03", "2024-01-04", "2024-01-05", "2024-01-06"]
+    data: ["2024-05-30", "2024-05-31", "2024-06-01", "2024-06-02", "2024-06-03", "2024-06-06"]
   },
   yAxis: {},
   series: [{

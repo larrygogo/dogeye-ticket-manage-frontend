@@ -5,7 +5,7 @@
     </span>
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item>退出登录</el-dropdown-item>
+        <el-dropdown-item @click="exit()">退出登录</el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>
@@ -15,4 +15,7 @@ import { ref } from 'vue'
 import {DropdownInstance} from "element-plus";
 import UserAvatar from "./UserAvatar.vue";
 const dropdown = ref<DropdownInstance>()
+const exit = () => {
+  window.location.href = '/'
+}
 </script>

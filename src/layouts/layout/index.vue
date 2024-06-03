@@ -16,5 +16,4 @@
 <script lang="ts" setup>
 import SideMenu from './SideMenu.vue'
 import GlobalHeader from './GlobalHeader.vue'
-
 </script>
