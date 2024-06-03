@@ -16,4 +16,18 @@
 <script lang="ts" setup>
 import SideMenu from './SideMenu.vue'
 import GlobalHeader from './GlobalHeader.vue'
+import {useUserStore} from "@/stores/user.ts";
+
+// 获取 token
+const token = localStorage.getItem('token')
+if (!token) {
+  // 未登录
+  window.location.href = '/login'
+}
+
+// 获取用户信息
+useUserStore().getUserInfo()
+
+
+
 </script>

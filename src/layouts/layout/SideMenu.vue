@@ -11,7 +11,7 @@
         class="el-menu-vertical-demo border-r-0"
         router
     >
-      <el-menu-item index="/index">
+      <el-menu-item index="/">
         <el-icon>
           <Gauge/>
         </el-icon>

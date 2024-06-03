@@ -39,10 +39,10 @@ const submitForm = (formEl: FormInstance | undefined) => {
     if (valid) {
       const result = await fetch(`/api/login?name=${ruleForm.username}&password=${ruleForm.password}`, {method: 'GET'})
           .then(res => res.json())
-      if (result.code === 0){
-        // const store = useUserInfoStore()
 
-        window.location.href = '/index'
+      if (result.code === 0){
+        localStorage.setItem('token', result.data)
+        window.location.href = '/'
       } else {
         console.log(result.msg)
       }
