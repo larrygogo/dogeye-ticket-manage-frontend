@@ -9,10 +9,10 @@ import VueECharts from "vue-echarts";
 import * as echarts from "echarts"
 import { use } from "echarts/core";
 import { createPinia } from 'pinia'
-// import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 const pinia = createPinia()
-// pinia.use(piniaPluginPersistedstate)
+pinia.use(piniaPluginPersistedstate)
 
 // 手动引入 ECharts 各模块来减小打包体积
 import {

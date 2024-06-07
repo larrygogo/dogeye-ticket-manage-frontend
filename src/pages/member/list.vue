@@ -192,7 +192,8 @@ const createUser = async (form : any) => {
   const result = await fetch("/api/user/register",{
     method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      Authorization: localStorage.getItem('token') || 'token'
     },
     body:  JSON.stringify({
      ...form,
@@ -213,7 +214,11 @@ const createUser = async (form : any) => {
 const handleClick = async (uid: number) => {
   console.log(uid)
   updateMemberModalOpen.value = true
-  const result = await fetch(`/api/user/findUserById?uid=${uid}`)
+  const result = await fetch(`/api/user/findUserById?uid=${uid}`,{
+    headers:{
+      Authorization: localStorage.getItem('token') || 'token'
+    }
+  })
       .then(res => res.json())
   updateForm.uid = result.data.uid
   updateForm.nickname = result.data.nickname
@@ -229,7 +234,8 @@ const updateUser = async (updateForm : any) => {
   const result = await fetch("/api/user/update",{
     method: "PUT",
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      Authorization: localStorage.getItem('token') || 'token'
     },
     body:  JSON.stringify({
       ...updateForm,
@@ -249,7 +255,10 @@ const updateUser = async (updateForm : any) => {
 
 const deleteUser = async () => {
   console.log(centerDialogVisible.uid)
-  const result = await fetch(`/api/user/delete?uid=${centerDialogVisible.uid}`, {method: "delete"})
+  const result = await fetch(`/api/user/delete?uid=${centerDialogVisible.uid}`, {method: "delete",
+  headers:{
+    Authorization: localStorage.getItem('token') || 'token'
+  }})
       .then(res => res.json())
   if (result.code == 0) {
     console.log("删除成功")
@@ -281,7 +290,11 @@ const getUserByName = async (nickname: string) => {
     code: number,
     data: any,
     message: string
-  } = await fetch(`/api/user/findByName?nickname=${nickname}`)
+  } = await fetch(`/api/user/findByName?nickname=${nickname}`,{
+    headers:{
+      Authorization: localStorage.getItem('token') || 'token'
+    }
+  })
       .then(res => res.json())
   console.log(result)
   if (result.code == 0){
@@ -302,7 +315,11 @@ const getUsers = async (params?: {
 }> => {
   const {current, pageSize} = params || {}
   console.log(current, pageSize)
-  return fetch(`/api/user/getUserList?pageNumber=${current}&pageSize=${pageSize}`)
+  return fetch(`/api/user/getUserList?pageNumber=${current}&pageSize=${pageSize}`,{
+    headers:{
+      Authorization: localStorage.getItem('token') || 'token'
+    }
+  })
       .then(res => res.json())
 }
 

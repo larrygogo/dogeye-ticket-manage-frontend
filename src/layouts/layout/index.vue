@@ -22,6 +22,7 @@ import {useUserStore} from "@/stores/user.ts";
 const token = localStorage.getItem('token')
 if (!token) {
   // 未登录
+  alert("请先登录")
   window.location.href = '/login'
 }
 

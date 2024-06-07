@@ -10,9 +10,9 @@ export const useUserStore = defineStore({
     getUserInfo() {
       const token = localStorage.getItem('token')
       if (token === null) window.location.href = '/login'
-      fetch('/api/userinfo', {
-        headers: {
-          token: token
+      fetch(`/api/token?token=${token}`,{
+        headers:{
+          Authorization: localStorage.getItem('token') || 'token'
         }
       }).then(res => res.json()).then(res => {
         console.log(res)
@@ -20,9 +20,13 @@ export const useUserStore = defineStore({
           window.location.href = '/login'
         } else {
           this.name = res.data.name
-          this.avatar = res.data.avatar
+          this.avatar = "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
         }
       })
+    },
+    logout() {
+      localStorage.removeItem('token')
+      window.location.href = '/login'
     }
   },
 })

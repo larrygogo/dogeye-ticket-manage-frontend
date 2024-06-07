@@ -176,7 +176,11 @@ const getAdminByName = async (name: string) => {
     code: number,
     data: any,
     message: string
-  } = await fetch(`/api/admin/findByName?name=${name}`)
+  } = await fetch(`/api/admin/findByName?name=${name}`,{
+    headers: {
+      Authorization: localStorage.getItem('token') || 'token'
+    }
+  })
       .then(res => res.json())
   console.log(result)
   if (result.code == 0){
@@ -195,7 +199,10 @@ const deleteClick = (id: string) => {
 
 const deleteAdmin = async () => {
   console.log(centerDialogVisible.id)
-  const result = await fetch(`/api/admin/deleteById?adminId=${centerDialogVisible.id}`, {method: "delete"})
+  const result = await fetch(`/api/admin/deleteById?adminId=${centerDialogVisible.id}`, {method: "delete",
+  headers:{
+    Authorization: localStorage.getItem('token') || 'token'
+  }})
       .then(res => res.json())
   if (result.code == 0) {
     console.log("删除成功")
@@ -212,7 +219,11 @@ const deleteAdmin = async () => {
 
 const handleClick = async (id: number) => {
   updateAdminModalOpen.value = true;
-  const result = await fetch(`/api/admin/getById?adminId=${id}`)
+  const result = await fetch(`/api/admin/getById?adminId=${id}`,{
+    headers:{
+      Authorization: localStorage.getItem('token') || 'token'
+    }
+  })
       .then(res => res.json())
   updateForm.adminId = result.data.adminId
   updateForm.name =  result.data.name
@@ -226,7 +237,8 @@ const createAdmin = async (form : any) => {
   const result = await fetch("/api/admin/add",{
     method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      Authorization: localStorage.getItem('token') || 'token'
     },
     body:  JSON.stringify({
       ...form,
@@ -248,7 +260,8 @@ const updateAdmin = async (updateForm : any) => {
   const result = await fetch("/api/admin/updateById",{
     method: "PUT",
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      Authorization: localStorage.getItem('token') || 'token'
     },
     body:  JSON.stringify({
       ...updateForm,
@@ -284,7 +297,11 @@ const getAdmins = async (params?: {
 }> => {
   const {current, pageSize} = params || {}
   console.log(current, pageSize)
-  return fetch(`/api/admin/getAdminList?pageNumber=${current}&pageSize=${pageSize}`)
+  return fetch(`/api/admin/getAdminList?pageNumber=${current}&pageSize=${pageSize}`,{
+    headers:{
+      Authorization: localStorage.getItem('token') || 'token'
+    }
+  })
       .then(res => res.json())
 }
 

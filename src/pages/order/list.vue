@@ -94,7 +94,10 @@ const handleClick = async (orderId: string) => {
 
 const deleteOrder = async () => {
   console.log(centerDialogVisible.orderId)
-  const result = await fetch(`/api/order/deleteById?orderId=${centerDialogVisible.orderId}`, {method: "delete"})
+  const result = await fetch(`/api/order/deleteById?orderId=${centerDialogVisible.orderId}`, {method: "delete",
+  headers:{
+    Authorization: localStorage.getItem('token') || 'token'
+  }})
       .then(res => res.json())
   if (result.code == 0) {
     console.log("删除成功")
@@ -127,15 +130,12 @@ const getOrders = async (params?: {
 }> => {
   const {current, pageSize} = params || {}
   console.log(current, pageSize)
-  const result = await fetch(`/api/order/getOrderList?pageNumber=${current}&pageSize=${pageSize}`)
+  return await fetch(`/api/order/getOrderList?pageNumber=${current}&pageSize=${pageSize}`, {
+    headers: {
+      Authorization: localStorage.getItem('token') || 'token'
+    }
+  })
       .then(res => res.json())
-  for (let i =0; i < result.data.length; i++){
-    result.data[i].uid = await fetch(`/api/user/findUserById?uid=${result.data[i].uid}`)
-        .then(res => res.json())
-        .then(res => res.data.name)
-  }
-
-  return result
 }
 
 getOrders({

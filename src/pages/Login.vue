@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import {reactive, ref} from 'vue'
 import type {FormInstance, FormRules} from 'element-plus'
-// import {useUserInfoStore} from "@/stores/user.ts";
 
 const ruleFormRef = ref<FormInstance>()
 
@@ -44,7 +43,8 @@ const submitForm = (formEl: FormInstance | undefined) => {
         localStorage.setItem('token', result.data)
         window.location.href = '/'
       } else {
-        console.log(result.msg)
+        alert(result.message)
+        console.log(result.message)
       }
     } else {
       console.log('error submit!')
